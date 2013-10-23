@@ -1,0 +1,24 @@
+{
+  "name": "git-indexeddb",
+  "version": "0.1.0",
+  "description": "A indexedDB db for js-git.",
+  "main": "indexeddb.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/aaronpowell/git-indexeddb.git"
+  },
+  "keywords": [
+    "js-git",
+    "indexeddb",
+    "db"
+  ],
+  "author": "Aaron Powell <me@aaron-powell.com.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aaronpowell/git-indexeddb/issues"
+  }
+}
+
