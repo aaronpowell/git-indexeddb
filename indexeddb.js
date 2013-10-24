@@ -67,8 +67,7 @@ function (module, exports, indexedDB) {
             callback();
         });
         request.addEventListener('error', function (e) {
-            //Some better error handling would be nice...
-            throw e;
+            callbcak(e);
         });
     };
 
@@ -88,7 +87,7 @@ function (module, exports, indexedDB) {
                 callback(null, e.target.result.value);
             });
             request.addEventListener('error', function (e) {
-                throw e;
+                callbcak(e);
             });
         } else {
             var transaction = context.db.transaction(pathStoreName);
@@ -100,7 +99,7 @@ function (module, exports, indexedDB) {
                 callback(null, e.target.result ? e.target.result.ref : undefined);
             });
             request.addEventListener('error', function (e) {
-                throw e;
+                callbcak(e);
             });
         }
     };
@@ -122,7 +121,7 @@ function (module, exports, indexedDB) {
                 }
             });
             request.addEventListener('error', function (e) {
-                throw e;
+                callbcak(e);
             });
         } else {
             var request = store.openCursor();
@@ -136,7 +135,7 @@ function (module, exports, indexedDB) {
                 }
             });
             request.addEventListener('error', function (e) {
-                throw e;
+                callbcak(e);
             });
             transaction.addEventListener('success', function (e) {
                 callback(null, keys.reduce(function (arr, key) {
@@ -175,7 +174,7 @@ function (module, exports, indexedDB) {
                     callback();
                 });
                 transaction.addEventListener('error', function (e) {
-                    throw e;
+                    callbcak(e);
                 });
             });
         } else {
@@ -192,7 +191,7 @@ function (module, exports, indexedDB) {
                 callback();
             });
             transaction.addEventListener('error', function (e) {
-                throw e;
+                callbcak(e);
             });
         }
     };
@@ -214,7 +213,7 @@ function (module, exports, indexedDB) {
             callback(null, !!e.target.result);
         });
         request.addEventListener('error', function (e) {
-            throw e;
+            callbcak(e);
         });
     };
 });
