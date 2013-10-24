@@ -87,7 +87,7 @@ function (module, exports, indexedDB) {
                 callback(null, e.target.result.value);
             });
             request.addEventListener('error', function (e) {
-                callbcak(e);
+                callback(e);
             });
         } else {
             var transaction = context.db.transaction(pathStoreName);
@@ -99,7 +99,7 @@ function (module, exports, indexedDB) {
                 callback(null, e.target.result ? e.target.result.ref : undefined);
             });
             request.addEventListener('error', function (e) {
-                callbcak(e);
+                callback(e);
             });
         }
     };
@@ -122,7 +122,7 @@ function (module, exports, indexedDB) {
                 }
             });
             request.addEventListener('error', function (e) {
-                callbcak(e);
+                callback(e);
             });
         } else {
             var request = store.openCursor();
@@ -136,7 +136,7 @@ function (module, exports, indexedDB) {
                 }
             });
             request.addEventListener('error', function (e) {
-                callbcak(e);
+                callback(e);
             });
             transaction.addEventListener('success', function (e) {
                 callback(null, keys.reduce(function (arr, key) {
@@ -176,7 +176,7 @@ function (module, exports, indexedDB) {
                     callback();
                 });
                 transaction.addEventListener('error', function (e) {
-                    callbcak(e);
+                    callback(e);
                 });
             });
         } else {
@@ -193,7 +193,7 @@ function (module, exports, indexedDB) {
                 callback();
             });
             transaction.addEventListener('error', function (e) {
-                callbcak(e);
+                callback(e);
             });
         }
     };
