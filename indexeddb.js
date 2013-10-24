@@ -33,9 +33,7 @@ function (module, exports, indexedDB) {
     };
 
     var fake = function fake(input, callback) {
-        setImmediate(function () {
-            callback(null, input);
-        });
+        callback(null, input);
     };
 
     var db = function db(prefix) {
@@ -52,6 +50,7 @@ function (module, exports, indexedDB) {
     };
 
     var init = function init(prefix, callback) {
+        if (!callback) return init.bind(this, prefix);
         var request = indexedDB.open(prefix, version);
         var context = this;
 
@@ -67,11 +66,12 @@ function (module, exports, indexedDB) {
             callback();
         });
         request.addEventListener('error', function (e) {
-            callbcak(e);
+            callback(e);
         });
     };
 
     var get = function get(key, callback) {
+        if (!callback) return get.bind(this, key);
         var context = this;
         if (!callback) {
             return get.bind(this, key);
@@ -105,6 +105,7 @@ function (module, exports, indexedDB) {
     };
 
     var keys = function keys(prefix, callback) {
+        if (!callback) return keys.bind(this, prefix);
         var context = this;
 
         var transaction = context.db.transaction(pathStoreName);
@@ -146,6 +147,7 @@ function (module, exports, indexedDB) {
     };
 
     var set = function set(key, value, callback) {
+        if (!callback) return set.bind(this, key, value);
         var context = this;
         if (!callback) {
             return set.bind(context, key, value);
@@ -157,7 +159,7 @@ function (module, exports, indexedDB) {
                 for (var i = 0, l = deflated.length; i < l; ++i) {
                   raw += String.fromCharCode(deflated[i]);
                 }
-                
+
                 var transaction = context.db.transaction(hashStoreName, 'readwrite');
                 var store = transaction.objectStore(hashStoreName);
 
@@ -197,6 +199,7 @@ function (module, exports, indexedDB) {
     };
 
     var has = function has(key, callback) {
+        if (!callback) return has.bind(this, key);
         var store = pathStoreName;
         var context = this;
 
