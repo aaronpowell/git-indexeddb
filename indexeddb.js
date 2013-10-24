@@ -33,9 +33,7 @@ function (module, exports, indexedDB) {
     };
 
     var fake = function fake(input, callback) {
-        setImmediate(function () {
-            callback(null, input);
-        });
+        callback(null, input);
     };
 
     var db = function db(prefix) {
