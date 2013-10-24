@@ -97,7 +97,7 @@ function (module, exports, indexedDB) {
             var request = store.get(key);
 
             request.addEventListener('success', function (e) {
-                callback(null, e.target.result);
+                callback(null, e.target.result ? e.target.result.ref : undefined);
             });
             request.addEventListener('error', function (e) {
                 throw e;
@@ -182,7 +182,7 @@ function (module, exports, indexedDB) {
             var transaction = context.db.transaction(pathStoreName, 'readwrite');
             var store = transaction.objectStore(pathStoreName);
             var record = {
-                keys: [value]
+                ref: value
             };
             record[pathIndexKey] = key;
 
