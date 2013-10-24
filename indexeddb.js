@@ -45,7 +45,8 @@ function (module, exports, indexedDB) {
         return {
             init: init.bind(context, prefix),
             get: get.bind(context),
-            keys: keys.bind(context)
+            keys: keys.bind(context),
+            set: set.bind(context)
         };
     };
 
@@ -146,6 +147,57 @@ function (module, exports, indexedDB) {
                 callback(null, keys.reduce(function (arr, key) {
                     return arr.concat(key.keys);
                 }, []));
+            });
+        }
+    };
+
+    var set = function set(key, value, callback) {
+        var context = this;
+        if (!callback) {
+            return set.bind(context, key, value);
+        }
+
+        if (isHash.test(key)) {
+            return deflate(value, function (err, deflated) {
+                var raw = "";
+                for (var i = 0, l = deflated.length; i < l; ++i) {
+                  raw += String.fromCharCode(deflated[i]);
+                }
+                
+                var transaction = context.db.transaction(hashStoreName, 'readwrite');
+                var store = transaction.objectStore(hashStoreName);
+
+                var record = {
+                    value: value,
+                    raw: raw
+                };
+
+                record[hashIndexKey] = key;
+
+                var request = store.put(record);
+
+                request.addEventListener('success', function (e) {
+                    callback();
+                });
+                request.addEventListener('error', function (e) {
+                    throw e;
+                });
+            });
+        } else {
+            var transaction = context.db.transaction(pathStoreName, 'readwrite');
+            var store = transaction.objectStore(pathStoreName);
+            var record = {
+                keys: [value]
+            };
+            record[pathIndexKey] = key;
+
+            var request = store.put(record);
+
+            request.addEventListener('success', function (e) {
+                callback();
+            });
+            request.addEventListener('error', function (e) {
+                throw e;
             });
         }
     };
