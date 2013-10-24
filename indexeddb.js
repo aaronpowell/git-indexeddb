@@ -68,7 +68,7 @@ function (module, exports, indexedDB) {
             callback();
         });
         request.addEventListener('error', function (e) {
-            callbcak(e);
+            callback(e);
         });
     };
 
@@ -161,7 +161,7 @@ function (module, exports, indexedDB) {
                 for (var i = 0, l = deflated.length; i < l; ++i) {
                   raw += String.fromCharCode(deflated[i]);
                 }
-                
+
                 var transaction = context.db.transaction(hashStoreName, 'readwrite');
                 var store = transaction.objectStore(hashStoreName);
 
