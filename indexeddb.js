@@ -52,6 +52,7 @@ function (module, exports, indexedDB) {
     };
 
     var init = function init(prefix, callback) {
+        if (!callback) return init.bind(this, prefix);
         var request = indexedDB.open(prefix, version);
         var context = this;
 
@@ -72,6 +73,7 @@ function (module, exports, indexedDB) {
     };
 
     var get = function get(key, callback) {
+        if (!callback) return get.bind(this, key);
         var context = this;
         if (!callback) {
             return get.bind(this, key);
@@ -105,6 +107,7 @@ function (module, exports, indexedDB) {
     };
 
     var keys = function keys(prefix, callback) {
+        if (!callback) return keys.bind(this, prefix);
         var context = this;
 
         var transaction = context.db.transaction(pathStoreName);
@@ -146,6 +149,7 @@ function (module, exports, indexedDB) {
     };
 
     var set = function set(key, value, callback) {
+        if (!callback) return set.bind(this, key, value);
         var context = this;
         if (!callback) {
             return set.bind(context, key, value);
@@ -197,6 +201,7 @@ function (module, exports, indexedDB) {
     };
 
     var has = function has(key, callback) {
+        if (!callback) return has.bind(this, key);
         var store = pathStoreName;
         var context = this;
 
