@@ -57,15 +57,9 @@ function (module, exports, indexedDB) {
         request.addEventListener('upgradeneeded', function (e) {
             var db = e.target.result;
 
-            var hashStore = db.createObjectStore(hashStoreName);
-            hashStore.createIndex(hashIndexKey, hashIndexKey, {
-                unique: true
-            });
+            var hashStore = db.createObjectStore(hashStoreName, { keyPath: hashIndexKey });
 
-            var pathStore = db.createObjectStore(pathStoreName);
-            pathStore.createIndex(pathIndexKey, pathIndexKey, {
-                unique: true
-            });
+            var pathStore = db.createObjectStore(pathStoreName, { keyPath: pathIndexKey });
         });
         request.addEventListener('success', function (e) {
             context.db = e.target.result;
