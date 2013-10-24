@@ -170,10 +170,10 @@ function (module, exports, indexedDB) {
 
                 var request = store.put(record);
 
-                request.addEventListener('success', function (e) {
+                transaction.addEventListener('complete', function (e) {
                     callback();
                 });
-                request.addEventListener('error', function (e) {
+                transaction.addEventListener('error', function (e) {
                     throw e;
                 });
             });
@@ -187,10 +187,10 @@ function (module, exports, indexedDB) {
 
             var request = store.put(record);
 
-            request.addEventListener('success', function (e) {
+            transaction.addEventListener('complete', function (e) {
                 callback();
             });
-            request.addEventListener('error', function (e) {
+            transaction.addEventListener('error', function (e) {
                 throw e;
             });
         }
