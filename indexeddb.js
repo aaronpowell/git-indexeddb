@@ -46,7 +46,8 @@ function (module, exports, indexedDB) {
             init: init.bind(context, prefix),
             get: get.bind(context),
             keys: keys.bind(context),
-            set: set.bind(context)
+            set: set.bind(context),
+            has: has.bind(context)
         };
     };
 
@@ -194,5 +195,26 @@ function (module, exports, indexedDB) {
                 throw e;
             });
         }
+    };
+
+    var has = function has(key, callback) {
+        var store = pathStoreName;
+        var context = this;
+
+        if (isHash.test(key)) {
+            store = hashStoreName;
+        }
+
+        var transaction = context.db.transaction(store);
+        var store = transaction.objectStore(store);
+
+        var request = store.get(key);
+
+        request.addEventListener('success', function (e) {
+            callback(null, !!e.target.result);
+        });
+        request.addEventListener('error', function (e) {
+            throw e;
+        });
     };
 });
