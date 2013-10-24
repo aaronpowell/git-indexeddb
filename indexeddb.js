@@ -84,7 +84,7 @@ function (module, exports, indexedDB) {
 
             request.addEventListener('success', function (e) {
                 //pretty sure if it goes in as Uint8Array it comes out as such
-                callback(null, e.target.result);
+                callback(null, e.target.result.value);
             });
             request.addEventListener('error', function (e) {
                 throw e;
