@@ -44,7 +44,8 @@ function (module, exports, indexedDB) {
 
         return {
             init: init.bind(context, prefix),
-            get: get.bind(context)
+            get: get.bind(context),
+            keys: keys.bind(context)
         };
     };
 
@@ -108,4 +109,44 @@ function (module, exports, indexedDB) {
         }
     };
 
+    var keys = function keys(prefix, callback) {
+        var context = this;
+
+        var transaction = context.db.transaction(pathStoreName);
+        var store = transaction.objectStore(pathStoreName);
+
+        if (prefix) {
+            var request = store.get(prefix);
+
+            request.addEventListener('success', function (e) {
+                if (e.target.result) {
+                    callback(null, e.target.result.keys);
+                } else {
+                    callback(null, []);
+                }
+            });
+            request.addEventListener('error', function (e) {
+                throw e;
+            });
+        } else {
+            var request = store.openCursor();
+            var keys = [];
+            request.addEventListener('success', function (e) {
+                var cursor = e.target.result;
+
+                if (cursor) {
+                    keys.push(cursor.value);
+                    cursor['continue']();
+                }
+            });
+            request.addEventListener('error', function (e) {
+                throw e;
+            });
+            transaction.addEventListener('success', function (e) {
+                callback(null, keys.reduce(function (arr, key) {
+                    return arr.concat(key.keys);
+                }, []));
+            });
+        }
+    };
 });
