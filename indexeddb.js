@@ -45,7 +45,8 @@ function (module, exports, indexedDB) {
             get: get.bind(context),
             keys: keys.bind(context),
             set: set.bind(context),
-            has: has.bind(context)
+            has: has.bind(context),
+            del: del.bind(content)
         };
     };
 
@@ -216,7 +217,30 @@ function (module, exports, indexedDB) {
             callback(null, !!e.target.result);
         });
         request.addEventListener('error', function (e) {
-            callbcak(e);
+            callback(e);
+        });
+    };
+
+    var del = function del(key, callback) {
+        if (!callback) return del.bind(this, key);
+
+        var store = pathStoreName;
+        var context = this;
+
+        if (isHash.test(key)) {
+            store = hashStoreName;
+        }
+
+        var transaction = context.db.transaction(store, 'readwrite');
+        var store = transaction.objectStore(store);
+
+        var request = store.delete(key);
+
+        request.addEventListener('success', function (e) {
+            callback();
+        });
+        request.addEventListener('error', function (e) {
+            callback(e);
         });
     };
 });
