@@ -46,7 +46,8 @@ function (module, exports, indexedDB) {
             keys: keys.bind(context),
             set: set.bind(context),
             has: has.bind(context),
-            del: del.bind(content)
+            del: del.bind(context),
+            clear: clear.bind(context, prefix)
         };
     };
 
@@ -236,6 +237,21 @@ function (module, exports, indexedDB) {
 
         var request = store.delete(key);
 
+        request.addEventListener('success', function (e) {
+            callback();
+        });
+        request.addEventListener('error', function (e) {
+            callback(e);
+        });
+    };
+
+    var clear = function clear(prefix, callback) {
+        if (!callback) return clear.bind(this, prefix);
+        var context = this;
+
+        context.db.close();
+
+        var request = indexedDB.deleteDatabase(prefix);
         request.addEventListener('success', function (e) {
             callback();
         });
