@@ -1,6 +1,6 @@
 {
   "name": "git-indexeddb",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A indexedDB db for js-git.",
   "main": "indexeddb.js",
   "scripts": {
