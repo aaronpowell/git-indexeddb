@@ -1,4 +1,5 @@
 (function (module, exports, fn) {
+    'use strict';
     if (typeof module === 'undefined') {
         module = {
             exports: {}
@@ -18,6 +19,7 @@
     );
 })(module, exports,
 function (module, exports, indexedDB) {
+    'use strict';
     var version = 1;
     var hashStoreName = 'hashs';
     var hashIndexKey = 'hash';
@@ -38,7 +40,6 @@ function (module, exports, indexedDB) {
 
     var db = function db(prefix) {
         var context = {};
-        'use strict';
 
         return {
             init: init.bind(context, prefix),
@@ -85,7 +86,6 @@ function (module, exports, indexedDB) {
             var request = store.get(key);
 
             request.addEventListener('success', function (e) {
-                //pretty sure if it goes in as Uint8Array it comes out as such
                 callback(null, e.target.result.value);
             });
             request.addEventListener('error', function (e) {
@@ -128,12 +128,12 @@ function (module, exports, indexedDB) {
             });
         } else {
             var request = store.openCursor();
-            var keys = [];
+            var refs = [];
             request.addEventListener('success', function (e) {
                 var cursor = e.target.result;
 
                 if (cursor) {
-                    keys.push(cursor.value);
+                    refs.push(cursor.value.ref);
                     cursor['continue']();
                 }
             });
@@ -141,9 +141,7 @@ function (module, exports, indexedDB) {
                 callback(e);
             });
             transaction.addEventListener('success', function (e) {
-                callback(null, keys.reduce(function (arr, key) {
-                    return arr.concat(key.keys);
-                }, []));
+                callback(null, refs);
             });
         }
     };
@@ -156,30 +154,20 @@ function (module, exports, indexedDB) {
         }
 
         if (isHash.test(key)) {
-            return deflate(value, function (err, deflated) {
-                var raw = "";
-                for (var i = 0, l = deflated.length; i < l; ++i) {
-                  raw += String.fromCharCode(deflated[i]);
-                }
+            var transaction = context.db.transaction(hashStoreName, 'readwrite');
+            var store = transaction.objectStore(hashStoreName);
+            var record = {
+                value: value
+            };
+            record[hashIndexKey] = key;
 
-                var transaction = context.db.transaction(hashStoreName, 'readwrite');
-                var store = transaction.objectStore(hashStoreName);
+            var request = store.put(record);
 
-                var record = {
-                    value: value,
-                    raw: raw
-                };
-
-                record[hashIndexKey] = key;
-
-                var request = store.put(record);
-
-                transaction.addEventListener('complete', function (e) {
-                    callback();
-                });
-                transaction.addEventListener('error', function (e) {
-                    callback(e);
-                });
+            transaction.addEventListener('complete', function (e) {
+                callback();
+            });
+            transaction.addEventListener('error', function (e) {
+                callback(e);
             });
         } else {
             var transaction = context.db.transaction(pathStoreName, 'readwrite');
